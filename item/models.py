@@ -13,6 +13,7 @@ class Item(models.Model):
 class RecipeIngredient(models.Model):
     item = models.OneToOneField(Item, related_name="recipe", on_delete=models.CASCADE)
     ingredients = models.JSONField(default=dict)  # Stores ingredients as a JSON object
+    person_count = models.IntegerField(default=100) # Number of persons this recipe is for
 
     def __str__(self):
-        return f"Ingredients for {self.item.name}"
+        return f"Ingredients for {self.item.name} ({self.person_count} persons)"

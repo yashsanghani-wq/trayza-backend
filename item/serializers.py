@@ -10,10 +10,10 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredient
-        fields = ['id', 'item', 'ingredients']
+        fields = ['id', 'item', 'ingredients', 'person_count']
 
 class EditRecipeIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredient
-        fields = ['id', 'ingredients']
+        fields = ['id', 'ingredients', 'person_count']
