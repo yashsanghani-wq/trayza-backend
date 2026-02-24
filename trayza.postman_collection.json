@@ -1,0 +1,1833 @@
+{
+	"info": {
+		"_postman_id": "d019a2bd-72d1-47ab-b733-4d105e853d7d",
+		"name": "Radhika",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33163402",
+		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-d019a2bd-72d1-47ab-b733-4d105e853d7d?action=share&source=collection_link&creator=33163402"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.environment.set(\"token\", response.data.tokens.access);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"Admin\",\n    \"password\" : \"Admin@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://yashsanghanig10x.pythonanywhere.com/api/login/",
+							"protocol": "https",
+							"host": [
+								"yashsanghanig10x",
+								"pythonanywhere",
+								"com"
+							],
+							"path": [
+								"api",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"testuser\",\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"strongpassword123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/users/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/users/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"old_password\": \"strongpassword123\",\r\n    \"new_password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/change-password/cb959b17-4249-4e05-b78d-91346bb7280d/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"change-password",
+								"cb959b17-4249-4e05-b78d-91346bb7280d",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/users/c59febf1-199d-47ad-9326-4abe75c585dc/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"users",
+								"c59febf1-199d-47ad-9326-4abe75c585dc",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "categories",
+			"item": [
+				{
+					"name": "all-categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/categories/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Salad & Side Dish\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/categories/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "categories-by-ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/categories/2/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"categories",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/categories/31/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"categories",
+								"31",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/categories/2/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"categories",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "category-positions-changes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"positions\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/category-positions-changes/21/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"category-positions-changes",
+								"21",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Items",
+			"item": [
+				{
+					"name": "all-items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/items/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"items",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"દાળ ખીચડી\",\n    \"category\": \"9\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/items/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"items",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"કઢી\",\n    \"category\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/items/62/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"items",
+								"62",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "items-by-ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/items/1/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"items",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/items/1/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"items",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "event-bookings",
+			"item": [
+				{
+					"name": "all-event-bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/event-bookings/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"event-bookings",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all-event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/get-all/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"get-all",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-event-bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ધર્મેશ\",\n    \"mobile_no\": \"+91 9999999999\",\n    \"date\": \"06-02-2025\",\n    \"reference\": \"શેરૂ\",\n    \"event_date\": \"16-02-2025\",\n    \"event_time\": \"સાંજે\",\n    // \"status\": \"confirm\",\n    \"event_address\": \"રાજકોટ\",\n    \"advance_amount\": \"150000\",\n    \"advance_payment_mode\": \"\",\n    \"per_dish_amount\": \"550\",\n    \"estimated_persons\": \"1500\",\n    \"selected_items\": {\n        \"સૂપ\": [\n            \"બ્રોકલી\",\n            \"સરગવા\"\n        ],\n        \"પાણી\": [\n            \"200 મિલી\",\n            \"500 મિલી\",\n            \"1 લિટર\"\n        ],\n        \"સલાડ\": [\n            \"લીલા ચના\",\n            \"ગાજર અને કાચી-કેરી\",\n            \"પંચરંગી\"\n        ],\n        \"મીઠાઈ\": [\n            \"ગાજર નો હલવો\",\n            \"ત્રિરંગી બરફી\",\n            \"બરફી\",\n            \"ગુલાબ જાંબુ\"\n        ],\n        \"વેલકમ ડ્રિંક્સ\": [\n            \"મિન્ટ લેમન\",\n            \"સ્ટ્રોબેરી શોટ\"\n        ],\n        \"ફરસાણ\": [\n            \"ખમણ\",\n            \"ખાંડવી/ પાટુડી\",\n            \"સમોસા\"\n        ],\n        \"શાક\": [\n            \"ગ્રીન ઊંધ્યું\",\n            \"કાજુ કરી\"\n        ],\n        \"તંદૂર\": [\n            \"સાધુ રોટલી\",\n            \"પુરી\",\n            \"સાદા પરાઠા\"\n        ],\n        \"રાઈસ\": [\n            \"જીરા રાઈસ\",\n            \"હાંડી બિરયાની\",\n            \"દાળ ખીચડી\"\n        ],\n        \"દાળ-કઢી\": [\n            \"દાળ ફ્રાય\",\n            \"કાઢી\"\n        ]\n    },\n    \"extra_service\": [\n        {\n            \"extra\": \"xxxx\",\n            \"amount\": \"100000\"\n        },\n        {\n            \"extra\": \"aaaa\",\n            \"amount\": \"200000\"\n        },\n        {\n            \"extra\": \"bbbb\",\n            \"amount\": \"300000\"\n        }\n    ],\n    \"description\": \"લેટર ૫\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/event-bookings/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"event-bookings",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "event-bookings-by-ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/event-bookings/32/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"event-bookings",
+								"32",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-event-bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/event-bookings/13/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"event-bookings",
+								"13",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-event-bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ધર્મેશ\",\n    \"mobile_no\": \"9998533013\",\n    \"date\": \"06-02-2025\",\n    \"reference\": \"શેરૂ\",\n    \"event_date\": \"16-02-2025\",\n    \"event_time\": \"સાંજે\",\n    // \"status\": \"confirm\",\n    \"event_address\": \"રાજકોટ\",\n    \"advance_amount\": \"150000\",\n    \"advance_payment_mode\": \"\",\n    \"per_dish_amount\": \"550\",\n    \"estimated_persons\": \"1500\",\n    \"selected_items\": {\n        \"સૂપ\": [\n            \"બ્રોકલી\",\n            \"સરગવા\"\n        ],\n        \"પાણી\": [\n            \"200 મિલી\",\n            \"500 મિલી\",\n            \"1 લિટર\"\n        ],\n        \"સલાડ\": [\n            \"લીલા ચના\",\n            \"ગાજર અને કાચી-કેરી\",\n            \"પંચરંગી\"\n        ],\n        \"મીઠાઈ\": [\n            \"ગાજર નો હલવો\",\n            \"ત્રિરંગી બરફી\",\n            \"બરફી\",\n            \"ગુલાબ જાંબુ\"\n        ],\n        \"વેલકમ ડ્રિંક્સ\": [\n            \"મિન્ટ લેમન\",\n            \"સ્ટ્રોબેરી શોટ\"\n        ],\n        \"ફરસાણ\": [\n            \"ખમણ\",\n            \"ખાંડવી/ પાટુડી\",\n            \"સમોસા\"\n        ],\n        \"શાક\": [\n            \"ગ્રીન ઊંધ્યું\",\n            \"કાજુ કરી\"\n        ],\n        \"તંદૂર\": [\n            \"સાધુ રોટલી\",\n            \"પુરી\",\n            \"સાદા પરાઠા\"\n        ],\n        \"રાઈસ\": [\n            \"જીરા રાઈસ\",\n            \"હાંડી બિરયાની\",\n            \"દાળ ખીચડી\"\n        ],\n        \"દાળ-કઢી\": [\n            \"દાળ ફ્રાય\",\n            \"કાઢી\"\n        ]\n    },\n    \"extra_service\": [{}\n        // {\n        //     \"extra\": \"3 sarvish lediz bapore \",\n        //     \"amount\": \"1800\"\n        // },\n        // {\n        //     \"extra\": \"3 sarvish lediz sanje\",\n        //     \"amount\": \"1800\"\n        // }\n    ],\n    \"description\": \"લેટર ૫\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/event-bookings/20/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"event-bookings",
+								"20",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status-change-event-bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"done\"\n    // \"per_dish_amount\": \"\",\n    // \"estimated_persons\": \"\"\n}\n//  STATUS_CHOICES = [\n//         (\"pending\", \"Pending\"),\n//         (\"confirm\", \"Confirm\"),\n//         (\"completed\", \"Completed\"),\n//         (\"cancelled\", \"Cancelled\"),\n//         (\"done\", \"Done\"),\n//     ]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/status-change-event-bookings/20/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"status-change-event-bookings",
+								"20",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-pending-event-bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/pending-event-bookings/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"pending-event-bookings",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "StockManagement",
+			"item": [
+				{
+					"name": "Items",
+					"item": [
+						{
+							"name": "get-all-stoke-items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/stoke-items/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-items",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "stoke-items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"કાજુ\",\n    \"category\": 3,\n    \"quantity\": \"20\",\n    \"alert\": \"10 KG\",\n    \"type\": \"KG\",\n    \"nte_price\": \"800\",\n    \"total_price\": \"16000\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/stoke-items/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-items",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-stoke-items",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"દૂધ\",\n    \"category\": 1,\n    \"quantity\": \"200\",\n    \"alert\": \"10 L\",\n    \"type\": \"L\",\n    \"nte_price\": \"60\",\n    \"total_price\": \"12000\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/stoke-items/3/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-items",
+										"3",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-stoke-items",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/stoke-items/2/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-items",
+										"2",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add Remove Items",
+					"item": [
+						{
+							"name": "remove-stoke-item",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"3\",\n    \"name\": \"દૂધ\",\n    \"quantity\": \"100\",\n    \"nte_price\": \"70\",\n    \"total_price\": \"7000\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/add-stoke-item/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"add-stoke-item",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add-stoke-item",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 4,\n    \"name\": \"Water\",\n    \"quantity\": \"1\",\n    \"nte_price\": \"500\",\n    \"total_price\": \"500\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/add-stoke-item/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"add-stoke-item",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Alert",
+					"item": [
+						{
+							"name": "alert-stoke-item",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/alert-stoke-item/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"alert-stoke-item",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Categories",
+					"item": [
+						{
+							"name": "get-stoke-categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/stoke-categories/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add-stoke-categories",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"કરિયાણું\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/stoke-categories/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-stoke-categories",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\" : \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/stoke-categories/3/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-categories",
+										"3",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-by-id-stoke-categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/stoke-categories/1/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-categories",
+										"1",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-stoke-categories",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/stoke-categories/1/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"stoke-categories",
+										"1",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "payments",
+			"item": [
+				{
+					"name": "all-payments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/payments/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"payments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-payments",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"billed_to\": [4],\n//     \"total_amount\": \"5000\",\n//     \"pending_amount\": \"4000\",\n//     \"advance_amount\": \"1000\",\n//     \"payment_date\": \"03-02-2025\",\n//     \"transaction_amount\": \"0\",\n//     \"settlement_amount\": \"0\"\n//     // \"payment_mode\": \"\"\n// }\n{\n    \"billed_to_ids\": [\n        3\n    ],\n    \"total_amount\": 470000,\n    \"pending_amount\": 0,\n    \"advance_amount\": 470000,\n    \"payment_date\": \"10-02-2025\",\n    \"transaction_amount\": 0,\n    \"settlement_amount\": 0,\n    \"total_extra_amount\" : 50000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/payments/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"payments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-payments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//     \"billed_to\": [],\n//     \"total_amount\": \"5000\",\n//     \"pending_amount\": \"0\",\n//     \"payment_date\": \"31-01-2025\",\n//     \"transaction_amount\": \"0\",\n//     \"settlement_amount\" : \"\",\n//     \"payment_status\": \"PAID\",\n//     \"payment_mode\": \"CASH\"\n// }\n\n{\n    \"billed_to\": [24,25],\n    \"total_amount\": 344000,\n    \"pending_amount\": 300000,\n    \"payment_date\": \"11-02-2025\",\n    \"transaction_amount\": 14000,\n    \"settlement_amount\": 0,\n    \"payment_mode\": \"CASH\",\n    \"payment_status\": \"PAID\",\n    \"total_extra_amount\": 13400,\n    \"rule\":true\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/payments/15/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"payments",
+								"15",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-payments",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/payments/11/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"payments",
+								"11",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "all-transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/all-transaction/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"all-transaction",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "recipes",
+			"item": [
+				{
+					"name": "add-recipes",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"item\": 7,\n    \"ingredients\": [\n        \"બ્રોકલી\",\n        \"બદામ\",\n        \"ઘી અથવા બટર\",\n        \"પાણી\",\n        \"દૂધ\",\n        \"મીઠું\",\n        \"મરી પાઉડર\",\n        \"ક્રીમ\",\n        \"લસણ અને ડુંગળી\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/recipes/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"recipes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "common-ingredients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event_id\" : \"91\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/common-ingredients/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"common-ingredients",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-recipes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/recipes/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"recipes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-recipes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ingredients\": [\n        \"ટમાટર\",\n        \"કાંદા\",\n        \"પનીર\",\n        \"દહીં\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/recipes/35/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"recipes",
+								"35",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-recipes",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/recipes/4/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"recipes",
+								"4",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ListOfIngridients",
+			"item": [
+				{
+					"name": "catagories",
+					"item": [
+						{
+							"name": "all-categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/ingridients-categories/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add-categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"શાકભાજી\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/ingridients-categories/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-categories",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "categories-by-ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/ingridients-categories/2/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-categories",
+										"2",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/ingridients-categories/6/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-categories",
+										"6",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/ingridients-categories/2/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-categories",
+										"2",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Items",
+					"item": [
+						{
+							"name": "all-items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/ingridients-item/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-item",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add-items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"ચાટ મસાલો\",\n    \"category\": \"2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/ingridients-item/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-item",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"કઢી\",\n    \"category\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/ingridients-item/62/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-item",
+										"62",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "items-by-ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/ingridients-item/1/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-item",
+										"1",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/ingridients-item/16/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"ingridients-item",
+										"16",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "event-ingridients-list",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_id\": \"24\",\n    \"ingridient_list_data\": [\n        {\n            \"name\": \"Other\",\n            \"data\": [\n                {\n                    \"item\": \"badam\",\n                    \"quantity_type\": \"kilo\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"આલમેડ બ્રોકોલી\",\n                            \"item_category\": \"Soup\",\n                            \"quantity\": \"10\",\n                            \"patry_name\" : \"name\"\n                        }\n                    ],\n                    \"total_quantity\": \"10\"\n                },\n                {\n                    \"item\": \"kaju\",\n                    \"quantity_type\": \"kilo\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"આલમેડ બ્રોકોલી\",\n                            \"item_category\": \"Soup\",\n                            \"quantity\": \"10\"\n                        }\n                    ],\n                    \"total_quantity\": \"10\"\n                },\n                {\n                    \"item\": \"brokli\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"આલમેડ બ્રોકોલી\",\n                            \"item_category\": \"Soup\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"આદુ-લસણ પેસ્ટ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"પાણીનો ગ્લાસ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"પાણીનો ગ્લાસ\",\n                            \"item_category\": \"Other\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચાનો કપ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"ચાનો કપ\",\n                            \"item_category\": \"Other\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"પાણી ના જગ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"પાણી ના જગ\",\n                            \"item_category\": \"Other\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"જ્યુસના ગ્લાસ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"જ્યુસના ગ્લાસ\",\n                            \"item_category\": \"Other\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                }\n            ]\n        },\n        {\n            \"name\": \"કરિયાણું\",\n            \"data\": [\n                {\n                    \"item\": \"મેંદો\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"અમૃતસરી કુલચા\",\n                            \"item_category\": \"Rotli\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"મીઠું\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"અમૃતસરી કુલચા\",\n                            \"item_category\": \"Rotli\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ખસખસ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"અમૃતસરી કુલચા\",\n                            \"item_category\": \"Rotli\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"તલ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"અમૃતસરી કુલચા\",\n                            \"item_category\": \"Rotli\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચણાનો લોટ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"તેલ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"હળદર\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"કાજુ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ગરમ મસાલો\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"લાલ મરચું\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ધાણા જીરું\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચોખા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"કાળા મરી\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચણા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"ચણા\",\n                            \"item_category\": \"કરિયાણું\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"મમરા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મમરા\",\n                            \"item_category\": \"કરિયાણું\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"સેવ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"સેવ\",\n                            \"item_category\": \"કરિયાણું\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચાટ મસાલો\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"ચાટ મસાલો\",\n                            \"item_category\": \"કરિયાણું\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                }\n            ]\n        },\n        {\n            \"name\": \"ડેરી પ્રોડક્ટ\",\n            \"data\": [\n                {\n                    \"item\": \"ઘી\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"અમૃતસરી કુલચા\",\n                            \"item_category\": \"Rotli\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"દૂધ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"અમૃતસરી કુલચા\",\n                            \"item_category\": \"Rotli\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"પનીર\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"દહીં\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                }\n            ]\n        },\n        {\n            \"name\": \"શાકભાજી\",\n            \"data\": [\n                {\n                    \"item\": \"મિક્સ શાકભાજી\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"લીલા મરચા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"આદુ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"કોથમીર\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"લીંબુ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"લીલું ઊંધ્યું\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ટામેટા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ડુંગળી\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"કાજુ પનીર ભુરજી\",\n                            \"item_category\": \"Sabji\",\n                            \"quantity\": \"\"\n                        },\n                        {\n                            \"item_name\": \"મટકા ચોખા\",\n                            \"item_category\": \"Dal-Rice\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"બટાટા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"મેથી\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"લસણ\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મેથી,ભરેલા,બટાટા પુરી\",\n                            \"item_category\": \"Bhajiya\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                }\n            ]\n        },\n        {\n            \"name\": \"વાસણ\",\n            \"data\": [\n                {\n                    \"item\": \"મોટા તપેલા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"મોટા તપેલા\",\n                            \"item_category\": \"વાસણ\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચમચા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"ચમચા\",\n                            \"item_category\": \"વાસણ\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ચોકી\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"ચોકી\",\n                            \"item_category\": \"વાસણ\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"બકડિયું\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"બકડિયું\",\n                            \"item_category\": \"વાસણ\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                },\n                {\n                    \"item\": \"ડોયા\",\n                    \"quantity_type\": \"\",\n                    \"use_item\": [\n                        {\n                            \"item_name\": \"ડોયા\",\n                            \"item_category\": \"વાસણ\",\n                            \"quantity\": \"\"\n                        }\n                    ],\n                    \"total_quantity\": \"0\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/event-ingridient-list/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"event-ingridient-list",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "get-note",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/get-note/",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"get-note",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-note",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"ખાસ નોંધ\",\n    \"content\": [\n        \"રસોઈ બનાવવા માટે ની જગ્યા ની વ્યવસ્થા પાર્ટીએ સમયસર કરાવવી આપવી\",\n        \"પાર્ટીએ રસોડાની 10 દિવસ અગાઉ મેનુ અને ડીશની સંખ્યા કન્ફોર્મ કરાવવાની રહેશે\\nપાછળથી કોઈ ફેરફાર થશે નહીં\",\n        \"વાસણ માટે પાણી તેમજ કચરાના નિકાલ ની વ્યવસ્થા પાર્ટીએ કરવાની રહેશે\",\n        \"કાઉન્ટર માટે ટેબલ તથા અન્ય મંડપ સર્વિસ ના સામાન ની વ્યવસ્થા\\nપાર્ટીએ કરવાની રહેશે\",\n        \"ફાર્મ અથવા વાડીનું વાસણભાડુ અને લાઈટબિલ પાર્ટીએ આપવાનું રહેશે\",\n        \"ફાર્મમાં ઈવેન્ટ તેમજ બીજી એજન્સી ના સફાઈ ની જવાબદારી કેટરર્સ ની રહેશે નહીં\",\n        \"કોઈપણ સમયે ઓર્ડરમાં તાત્કાલિક વધારો કે ઘટાડો થસે નહીં\",\n        \"ઓર્ડર આપ્યા બાદ પાર્ટી એ 30% પેમેન્ટ આપવાનું રહેશે\\nરસોડાના દિવસે પાર્ટીએ 50% પેમેન્ટ આપવાનું રહેશે\\nરસોડુ પૂરૂ થયા બાદ 2 દિવસ ની અંદર બાકીનું 20% પેમેન્ટ આપવાનું રહેશે\",\n        \"ડીશમાં વધારો થશે તો તેનો ચાર્જ અલગથી લેવામાં આવશે\",\n        \"ઓર્ડર કેન્સલ કરાવવા માટે 5 દિવસ પહેલાં થી જાણ કરવાની રહેશે\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/update-note/1/",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"update-note",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
