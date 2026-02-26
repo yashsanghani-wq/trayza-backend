@@ -103,10 +103,21 @@ WSGI_APPLICATION = "trayza.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "trayza",
+        "USER": "aquaflo",
+        "PASSWORD": "aquaflo2025",
+        "HOST": "178.16.139.235",
+        "PORT": "5432",
     }
 }
 
