@@ -2,6 +2,9 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from trayza.Utils.permissions import *
 from .serializers import *
+from collections import defaultdict
+from trayza.Utils.scale_factor import *
+from item.models import RecipeIngredient
 
 # --------------------    EventBookingViewSet    --------------------
 
@@ -141,16 +144,76 @@ class EventBookingGetViewSet(generics.GenericAPIView):
 
     def get(self, request, pk=None):
         try:
-            eventbooking = EventBooking.objects.get(pk=pk)
+            eventbooking = EventBooking.objects.prefetch_related("sessions").get(pk=pk)
             serializer = EventBookingSerializer(eventbooking)
+
+            response_data = serializer.data
+
+            # 🔥 Loop over serialized sessions
+            for session_dict, session_obj in zip(
+                response_data["sessions"], eventbooking.sessions.all()
+            ):
+
+                try:
+                    persons = int(session_obj.estimated_persons)
+                except:
+                    persons = 100
+
+                dishes_data = session_obj.selected_items.get("Dishes", [])
+                total_ingredients = defaultdict(lambda: {"value": 0, "unit": ""})
+
+                # Collect dish names
+                dish_names = [dish.get("name").strip() for dish in dishes_data]
+
+                # Fetch recipes in one query
+                recipes = {
+                    ri.item.name.strip(): ri
+                    for ri in RecipeIngredient.objects.select_related("item")
+                    .filter(item__name__in=dish_names)
+                }
+
+                # Calculate ingredients for this session
+                for dish_name in dish_names:
+
+                    recipe = recipes.get(dish_name)
+                    if not recipe:
+                        continue
+
+                    recipe_person_count = recipe.person_count if recipe.person_count > 0 else 100
+                    scale_factor = persons / recipe_person_count
+
+                    if isinstance(recipe.ingredients, dict):
+                        for ingredient, qty_str in recipe.ingredients.items():
+
+                            ingredient_name = ingredient.strip()
+
+                            value, unit = parse_quantity(qty_str)
+                            scaled_value = value * scale_factor
+
+                            total_ingredients[ingredient_name]["value"] += scaled_value
+                            total_ingredients[ingredient_name]["unit"] = unit
+
+                # Convert units
+                final_ingredients = {}
+
+                for ingredient, data in total_ingredients.items():
+                    converted_value, converted_unit = convert_unit(
+                        data["value"], data["unit"]
+                    )
+                    final_ingredients[ingredient] = f"{converted_value} {converted_unit}"
+
+                # 🔥 Inject inside session dictionary
+                session_dict["ingredients_required"] = final_ingredients
+
             return Response(
                 {
                     "status": True,
                     "message": "EventBooking retrieved successfully",
-                    "data": serializer.data,
+                    "data": response_data,
                 },
                 status=status.HTTP_200_OK,
             )
+
         except EventBooking.DoesNotExist:
             return Response(
                 {
@@ -158,7 +221,7 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                     "message": "EventBooking not found",
                     "data": {},
                 },
-                status=status.HTTP_200_OK,
+                status=status.HTTP_404_NOT_FOUND,
             )
 
     def delete(self, request, pk=None):

@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from rest_framework.response import Response
 from rest_framework import status, generics
 from ListOfIngridients.models import EventIngridientList, IngridientsCategory
@@ -7,6 +9,7 @@ from eventbooking.models import EventBooking
 from stockmanagement.models import StokeItem
 from .models import Item
 from .serializers import *
+from trayza.Utils.scale_factor import *
 
 
 # --------------------    ItemViewSet    --------------------
@@ -273,6 +276,119 @@ class EditRecipeIngredientViewSet(generics.GenericAPIView):
                 status=status.HTTP_200_OK,
             )
 
+
+# --------------------    Ingredient Calculator API    --------------------
+
+# class IngredientCalculatorView(generics.GenericAPIView):
+#     """Compute ingredient quantities for a list of dishes given a person count."""
+#     serializer_class = IngredientCalcSerializer
+#     permission_classes = [IsAdminUserOrReadOnly]
+
+#     def post(self, request):
+#         serializer = self.serializer_class(data=request.data)
+#         if not serializer.is_valid():
+#             return Response({
+#                 "status": False,
+#                 "message": "Validation error",
+#                 "errors": serializer.errors,
+#             }, status=status.HTTP_400_BAD_REQUEST)
+
+#         items = serializer.validated_data["items"]
+#         persons = serializer.validated_data["persons"]
+
+#         recipes = RecipeIngredient.objects.select_related("item").filter(
+#             item__name__in=items
+#         )
+
+#         # accumulate ingredient totals
+#         totals = {}
+#         import re
+
+#         for ri in recipes:
+#             ingredients = ri.ingredients
+#             recipe_person_count = ri.person_count if ri.person_count > 0 else 1
+#             scale_factor = persons / recipe_person_count
+
+#             if isinstance(ingredients, dict):
+#                 for ing, qty in ingredients.items():
+#                     try:
+#                         match = re.search(r"^\s*([\d\.]+)", str(qty))
+#                         if match:
+#                             num = float(match.group(1))
+#                             scaled_num = num * scale_factor
+#                             formatted = f"{scaled_num:.2f}".rstrip('0').rstrip('.')
+#                             final_qty = str(qty).replace(match.group(1), formatted, 1)
+#                         else:
+#                             final_qty = str(qty)
+#                     except Exception:
+#                         final_qty = str(qty)
+
+#                     totals.setdefault(ing, []).append({
+#                         "item": ri.item.name,
+#                         "quantity": final_qty,
+#                     })
+#             else:
+#                 # list of ingredient names without quantities
+#                 for ing in ingredients:
+#                     totals.setdefault(ing, []).append({
+#                         "item": ri.item.name,
+#                         "quantity": "",
+#                     })
+
+#         return Response({
+#             "status": True,
+#             "message": "Calculated ingredients",
+#             "data": totals,
+#         }, status=status.HTTP_200_OK)
+
+
+class IngredientCalculatorView(generics.GenericAPIView):
+
+    def post(self, request):
+        serializer = IngredientCalcSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        item_names = serializer.validated_data["items"]
+        persons = serializer.validated_data["persons"]
+
+        total_ingredients = defaultdict(float)
+        units = {}
+
+        items = Item.objects.filter(name__in=item_names).select_related("recipe")
+
+        if not items.exists():
+            return Response(
+                {"error": "No valid items found"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        for item in items:
+
+            if not hasattr(item, "recipe"):
+                continue
+
+            recipe = item.recipe
+            scale_factor = persons / recipe.person_count
+
+            for ingredient, qty in recipe.ingredients.items():
+
+                ingredient_name = ingredient.strip().lower()
+
+                value, unit = parse_quantity(qty)
+
+                total_ingredients[ingredient_name] += value * scale_factor
+                units[ingredient_name] = unit
+
+        result = {}
+
+        for name, value in total_ingredients.items():
+            converted_value, converted_unit = convert_unit(value, units[name])
+            result[name] = f"{converted_value} {converted_unit}"
+
+        return Response({
+            "persons": persons,
+            "ingredients_required": result
+        }, status=status.HTTP_200_OK)
 
 # --------------------    CommonIngredientsViewSet    --------------------
 
