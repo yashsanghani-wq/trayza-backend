@@ -69,33 +69,63 @@ class PaymentSerializer(serializers.ModelSerializer):
 
         # Fetch event booking details for all billed IDs
         event_bookings = EventBooking.objects.filter(id__in=billed_ids)
-        for event_booking in event_bookings:
-            if event_booking.extra_service_amount == "0" and all(service.get("extra") for service in event_booking.extra_service):
-                event_booking.extra_service_amount = str(sum(int(service.get("amount", 0)) for service in event_booking.extra_service))
-                event_booking.save()
-        detailed_bookings = [
-            {
-                "id": booking.id,
-                "name": booking.name,
-                "mobile_no": booking.mobile_no,
-                "date": booking.date.strftime("%d-%m-%Y"),
-                "reference": booking.reference,
-                "event_date": booking.event_date.strftime("%d-%m-%Y"),
-                "event_time": booking.event_time,
-                "status": booking.status,
-                "event_address": booking.event_address,
-                "advance_amount": str(booking.advance_amount),
-                "advance_payment_mode": booking.advance_payment_mode,
-                "per_dish_amount": str(booking.per_dish_amount),
-                "estimated_persons": booking.estimated_persons,
-                "extra_service_amount": booking.extra_service_amount,
-                "extra_service": booking.extra_service,
-                "selected_items": booking.selected_items,
-                "description": booking.description,
-                "rule" : booking.rule
-            }
-            for booking in event_bookings
-        ]
+        detailed_bookings = []
+        
+        for booking in event_bookings:
+            # Get the first event session for this booking (or handle multiple sessions as needed)
+            session = booking.sessions.first()
+            
+            if session:
+                # Update extra_service_amount if needed
+                if session.extra_service_amount == "0" and session.extra_service:
+                    if all(service.get("extra") for service in session.extra_service):
+                        session.extra_service_amount = str(sum(int(service.get("amount", 0)) for service in session.extra_service))
+                        session.save()
+                
+                booking_detail = {
+                    "id": booking.id,
+                    "name": booking.name,
+                    "mobile_no": booking.mobile_no,
+                    "date": booking.date.strftime("%d-%m-%Y"),
+                    "reference": booking.reference,
+                    "event_date": session.event_date.strftime("%d-%m-%Y"),
+                    "event_time": session.event_time,
+                    "status": booking.status,
+                    "event_address": session.event_address,
+                    "advance_amount": str(booking.advance_amount) if booking.advance_amount else "0",
+                    "advance_payment_mode": booking.advance_payment_mode,
+                    "per_dish_amount": str(session.per_dish_amount) if session.per_dish_amount else "0",
+                    "estimated_persons": session.estimated_persons,
+                    "extra_service_amount": session.extra_service_amount or "0",
+                    "extra_service": session.extra_service,
+                    "selected_items": session.selected_items,
+                    "description": booking.description,
+                    "rule": booking.rule
+                }
+            else:
+                # Handle case where no session exists
+                booking_detail = {
+                    "id": booking.id,
+                    "name": booking.name,
+                    "mobile_no": booking.mobile_no,
+                    "date": booking.date.strftime("%d-%m-%Y"),
+                    "reference": booking.reference,
+                    "event_date": "",
+                    "event_time": "",
+                    "status": booking.status,
+                    "event_address": "",
+                    "advance_amount": str(booking.advance_amount) if booking.advance_amount else "0",
+                    "advance_payment_mode": booking.advance_payment_mode,
+                    "per_dish_amount": "0",
+                    "estimated_persons": "",
+                    "extra_service_amount": "0",
+                    "extra_service": {},
+                    "selected_items": {},
+                    "description": booking.description,
+                    "rule": booking.rule
+                }
+            
+            detailed_bookings.append(booking_detail)
 
         data["billed_to_ids"] = detailed_bookings
 

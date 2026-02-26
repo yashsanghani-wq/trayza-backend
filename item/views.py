@@ -381,9 +381,22 @@ class IngredientCalculatorView(generics.GenericAPIView):
 
         result = {}
 
+        # attach category information for each ingredient, using ListOfIngridients models
+        ingredient_names = [name for name in total_ingredients.keys()]
+        from ListOfIngridients.models import IngridientsItem
+        items_with_categories = (
+            IngridientsItem.objects.filter(name__in=ingredient_names)
+            .select_related("category")
+        )
+        category_map = {item.name.strip().lower(): item.category.name for item in items_with_categories}
+
         for name, value in total_ingredients.items():
             converted_value, converted_unit = convert_unit(value, units[name])
-            result[name] = f"{converted_value} {converted_unit}"
+            cat = category_map.get(name.strip().lower(), "")
+            result[name] = {
+                "quantity": f"{converted_value} {converted_unit}",
+                "category": cat,
+            }
 
         return Response({
             "persons": persons,

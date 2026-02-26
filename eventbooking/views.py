@@ -196,11 +196,25 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                 # Convert units
                 final_ingredients = {}
 
+                # lookup categories for ingredients from the ListOfIngridients app
+                ingredient_names = [name for name in total_ingredients.keys()]
+                from ListOfIngridients.models import IngridientsItem
+                items_with_categories = (
+                    IngridientsItem.objects.filter(name__in=ingredient_names)
+                    .select_related("category")
+                )
+                category_map = {item.name.strip().lower(): item.category.name for item in items_with_categories}
+
                 for ingredient, data in total_ingredients.items():
                     converted_value, converted_unit = convert_unit(
                         data["value"], data["unit"]
                     )
-                    final_ingredients[ingredient] = f"{converted_value} {converted_unit}"
+                    cat = category_map.get(ingredient.strip().lower(), "")
+                    # store both quantity and category
+                    final_ingredients[ingredient] = {
+                        "quantity": f"{converted_value} {converted_unit}",
+                        "category": cat,
+                    }
 
                 # 🔥 Inject inside session dictionary
                 session_dict["ingredients_required"] = final_ingredients
