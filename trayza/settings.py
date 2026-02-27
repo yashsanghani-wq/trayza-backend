@@ -30,7 +30,8 @@ ALLOWED_HOSTS = ["*"]
 
 # Allow specific origins
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173","https://radhika-admin.evenmore.in",
+    "http://localhost:5173",
+    "https://radhika-admin.evenmore.in",
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
     "stockmanagement",
     "user",
     "Expense",
+    "vendor",
 ]
 
 

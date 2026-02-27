@@ -15,7 +15,7 @@ class EventBookingViewSet(generics.GenericAPIView):
 
     def post(self, request):
         sessions = request.data.get("sessions", [])
-        
+
         # Process each session's selected_items and extra_service
         for session in sessions:
             # Convert the selected_items payload for the session
@@ -25,7 +25,7 @@ class EventBookingViewSet(generics.GenericAPIView):
                 for key, value in selected_items.items()
             }
             session["selected_items"] = converted_payload
-            
+
             # Calculate extra_service_amount for the session
             amount = 0
             extra_services = session.get("extra_service", [])
@@ -58,18 +58,25 @@ class EventBookingViewSet(generics.GenericAPIView):
 
     def get(self, request):
         queryset = (
-            EventBooking.objects.prefetch_related('sessions')
+            EventBooking.objects.prefetch_related("sessions")
             .filter(status__in=["confirm", "completed"])
             .order_by("-date")
         )
         for event_booking in queryset:
             changed = False
             for session in event_booking.sessions.all():
-                if session.extra_service_amount == "0" and all(service.get("extra") for service in session.extra_service):
-                    session.extra_service_amount = str(sum(int(service.get("amount", 0)) for service in session.extra_service))
+                if session.extra_service_amount == "0" and all(
+                    service.get("extra") for service in session.extra_service
+                ):
+                    session.extra_service_amount = str(
+                        sum(
+                            int(service.get("amount", 0))
+                            for service in session.extra_service
+                        )
+                    )
                     session.save()
                     changed = True
-                
+
         serializer = EventBookingSerializer(queryset, many=True)
         return Response(
             {
@@ -89,31 +96,41 @@ class EventBookingGetViewSet(generics.GenericAPIView):
         try:
             eventbooking = EventBooking.objects.get(pk=pk)
             sessions = request.data.get("sessions")
-            
+
             if sessions is not None:
                 # Process each session
                 for session in sessions:
                     selected_items = session.get("selected_items", {})
                     extra_service = session.get("extra_service", [])
-                    
+
                     if all(service.get("extra") for service in extra_service):
-                        session["extra_service_amount"] = str(sum(int(service.get("amount", 0)) for service in extra_service))
-                    
+                        session["extra_service_amount"] = str(
+                            sum(
+                                int(service.get("amount", 0))
+                                for service in extra_service
+                            )
+                        )
+
                     if selected_items and isinstance(selected_items, dict):
                         # Some logic might pass already converted items, check if it's list of strings
-                        is_unconverted = any(isinstance(v, list) and len(v) > 0 and isinstance(v[0], str) for v in selected_items.values())
-                        
+                        is_unconverted = any(
+                            isinstance(v, list) and len(v) > 0 and isinstance(v[0], str)
+                            for v in selected_items.values()
+                        )
+
                         if is_unconverted:
                             converted_payload = {
                                 key: [{"name": item} for item in value]
                                 for key, value in selected_items.items()
                             }
                             session["selected_items"] = converted_payload
-                
+
                 request.data["sessions"] = sessions
 
             # Partially update the instance with only provided fields
-            serializer = EventBookingSerializer(eventbooking, data=request.data, partial=True)
+            serializer = EventBookingSerializer(
+                eventbooking, data=request.data, partial=True
+            )
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(
@@ -168,8 +185,9 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                 # Fetch recipes in one query
                 recipes = {
                     ri.item.name.strip(): ri
-                    for ri in RecipeIngredient.objects.select_related("item")
-                    .filter(item__name__in=dish_names)
+                    for ri in RecipeIngredient.objects.select_related("item").filter(
+                        item__name__in=dish_names
+                    )
                 }
 
                 # Calculate ingredients for this session
@@ -179,7 +197,9 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                     if not recipe:
                         continue
 
-                    recipe_person_count = recipe.person_count if recipe.person_count > 0 else 100
+                    recipe_person_count = (
+                        recipe.person_count if recipe.person_count > 0 else 100
+                    )
                     scale_factor = persons / recipe_person_count
 
                     if isinstance(recipe.ingredients, dict):
@@ -199,22 +219,68 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                 # lookup categories for ingredients from the ListOfIngridients app
                 ingredient_names = [name for name in total_ingredients.keys()]
                 from ListOfIngridients.models import IngridientsItem
-                items_with_categories = (
-                    IngridientsItem.objects.filter(name__in=ingredient_names)
-                    .select_related("category")
-                )
-                category_map = {item.name.strip().lower(): item.category.name for item in items_with_categories}
+
+                items_with_categories = IngridientsItem.objects.filter(
+                    name__in=ingredient_names
+                ).select_related("category")
+                category_map = {
+                    item.name.strip().lower(): item.category.name
+                    for item in items_with_categories
+                }
+
+                from stockmanagement.models import StokeItem
+
+                # Build stock_map for recipe-calculated ingredients
+                stock_items = StokeItem.objects.filter(name__in=ingredient_names)
+                stock_map = {
+                    item.name.strip().lower(): {
+                        "quantity": str(item.quantity),
+                        "type": item.type,
+                    }
+                    for item in stock_items
+                }
 
                 for ingredient, data in total_ingredients.items():
                     converted_value, converted_unit = convert_unit(
                         data["value"], data["unit"]
                     )
                     cat = category_map.get(ingredient.strip().lower(), "")
-                    # store both quantity and category
+                    stock_info = stock_map.get(ingredient.strip().lower(), {})
+
+                    # store quantity, category, available stock quantity and its type
                     final_ingredients[ingredient] = {
                         "quantity": f"{converted_value} {converted_unit}",
                         "category": cat,
+                        "available_stock": stock_info.get("quantity", "0"),
+                        "stock_type": stock_info.get("type", ""),
                     }
+
+                # ✅ Always include all "કોમન" / "Common" category ingredients
+                common_items = IngridientsItem.objects.filter(
+                    category__name__in=["કોમન", "Common"]
+                ).select_related("category")
+
+                common_names = [item.name for item in common_items]
+                common_stock_items = StokeItem.objects.filter(name__in=common_names)
+                common_stock_map = {
+                    item.name.strip().lower(): {
+                        "quantity": str(item.quantity),
+                        "type": item.type,
+                    }
+                    for item in common_stock_items
+                }
+
+                for item in common_items:
+                    key = item.name.strip().lower()
+                    # Only add if not already calculated from recipe
+                    if item.name not in final_ingredients:
+                        stock_info = common_stock_map.get(key, {})
+                        final_ingredients[item.name] = {
+                            "quantity": "0",
+                            "category": item.category.name,
+                            "available_stock": stock_info.get("quantity", "0"),
+                            "stock_type": stock_info.get("type", ""),
+                        }
 
                 # 🔥 Inject inside session dictionary
                 session_dict["ingredients_required"] = final_ingredients
@@ -301,7 +367,11 @@ class PendingEventBookingViewSet(generics.GenericAPIView):
     permission_classes = [IsAdminUserOrReadOnly]
 
     def get(self, request):
-        queryset = EventBooking.objects.prefetch_related('sessions').filter(status="pending").order_by("-date")
+        queryset = (
+            EventBooking.objects.prefetch_related("sessions")
+            .filter(status="pending")
+            .order_by("-date")
+        )
         serializer = EventBookingSerializer(queryset, many=True)
         return Response(
             {
@@ -312,9 +382,12 @@ class PendingEventBookingViewSet(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
+
 class GetAllEvent(generics.GenericAPIView):
-    def get(self,request):
-        queryset = EventBooking.objects.prefetch_related('sessions').all().order_by("-date")
+    def get(self, request):
+        queryset = (
+            EventBooking.objects.prefetch_related("sessions").all().order_by("-date")
+        )
         serializer = EventBookingSerializer(queryset, many=True)
         return Response(
             {

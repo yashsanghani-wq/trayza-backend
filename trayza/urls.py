@@ -28,4 +28,5 @@ urlpatterns = [
     path("app1/", include("stockmanagement.urls")),
     path("app1/", include("user.urls")),
     path("app1/", include("Expense.urls")),
+    path("app1/", include("vendor.urls")),
 ]
