@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
+
 class IngridientsItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngridientsItem
@@ -15,10 +16,12 @@ class IngridientsCategorySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "is_common",
             "items",
         ]
+
 
 class EventIngridientListSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventIngridientList
-        fields = ['event_id', 'ingridient_list_data']
+        fields = ["event_id", "ingridient_list_data"]

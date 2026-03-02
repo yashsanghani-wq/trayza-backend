@@ -1,13 +1,18 @@
 from django.db import models
 
+
 # Create your models here.
 class IngridientsCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     positions = models.IntegerField(default=0)
+    is_common = models.BooleanField(
+        default=False,
+        help_text="Always include items from this category in all event orders",
+    )
 
     def __str__(self):
         return self.name
-    
+
 
 class IngridientsItem(models.Model):
     category = models.ForeignKey(
@@ -17,7 +22,8 @@ class IngridientsItem(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class EventIngridientList(models.Model):
     event_id = models.CharField(max_length=100, unique=True)
     ingridient_list_data = models.JSONField(default=dict)

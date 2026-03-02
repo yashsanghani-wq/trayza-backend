@@ -177,7 +177,9 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                     persons = 100
 
                 dishes_data = session_obj.selected_items.get("Dishes", [])
-                total_ingredients = defaultdict(lambda: {"value": 0, "unit": ""})
+                total_ingredients = defaultdict(
+                    lambda: {"value": 0, "unit": "", "used_in": set()}
+                )
 
                 # Collect dish names
                 dish_names = [dish.get("name").strip() for dish in dishes_data]
@@ -212,6 +214,7 @@ class EventBookingGetViewSet(generics.GenericAPIView):
 
                             total_ingredients[ingredient_name]["value"] += scaled_value
                             total_ingredients[ingredient_name]["unit"] = unit
+                            total_ingredients[ingredient_name]["used_in"].add(dish_name)
 
                 # Convert units
                 final_ingredients = {}
@@ -253,11 +256,12 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                         "category": cat,
                         "available_stock": stock_info.get("quantity", "0"),
                         "stock_type": stock_info.get("type", ""),
+                        "used_in": list(data["used_in"]),
                     }
 
-                # ✅ Always include all "કોમન" / "Common" category ingredients
+                # ✅ Always include all categories marked as `is_common=True`
                 common_items = IngridientsItem.objects.filter(
-                    category__name__in=["કોમન", "Common"]
+                    category__is_common=True
                 ).select_related("category")
 
                 common_names = [item.name for item in common_items]
@@ -280,6 +284,7 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                             "category": item.category.name,
                             "available_stock": stock_info.get("quantity", "0"),
                             "stock_type": stock_info.get("type", ""),
+                            "used_in": [],
                         }
 
                 # 🔥 Inject inside session dictionary
