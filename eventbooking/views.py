@@ -255,6 +255,7 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                     )
                     cat = category_map.get(ingredient.strip().lower(), "")
                     stock_info = stock_map.get(ingredient.strip().lower(), {})
+                    vendor_info = session_obj.assigned_vendors.get(ingredient, None)
 
                     # store quantity, category, available stock quantity and its type
                     final_ingredients[ingredient] = {
@@ -264,6 +265,8 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                         "stock_type": stock_info.get("type", ""),
                         "used_in": list(data["used_in"]),
                     }
+                    if vendor_info:
+                        final_ingredients[ingredient]["vendor"] = vendor_info
 
                 # ✅ Always include all categories marked as `is_common=True`
                 common_items = IngridientsItem.objects.filter(
@@ -285,6 +288,8 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                     # Only add if not already calculated from recipe
                     if item.name not in final_ingredients:
                         stock_info = common_stock_map.get(key, {})
+                        vendor_info = session_obj.assigned_vendors.get(item.name, None)
+
                         final_ingredients[item.name] = {
                             "quantity": "0",
                             "category": item.category.name,
@@ -292,6 +297,8 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                             "stock_type": stock_info.get("type", ""),
                             "used_in": [],
                         }
+                        if vendor_info:
+                            final_ingredients[item.name]["vendor"] = vendor_info
 
                 # 🔥 Inject inside session dictionary
                 session_dict["ingredients_required"] = final_ingredients

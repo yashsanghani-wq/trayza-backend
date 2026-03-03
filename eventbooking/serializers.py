@@ -24,6 +24,7 @@ class EventSessionSerializer(serializers.ModelSerializer):
             "extra_service",
             "managers_assigned",
             "summoned_staff_details",
+            "assigned_vendors",
         ]
 
     def get_managers_assigned(self, obj):
