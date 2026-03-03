@@ -58,7 +58,10 @@ class EventBookingViewSet(generics.GenericAPIView):
 
     def get(self, request):
         queryset = (
-            EventBooking.objects.prefetch_related("sessions")
+            EventBooking.objects.prefetch_related(
+                "sessions__staff_assignments__staff__role",
+                "sessions__staff_assignments__role_at_event",
+            )
             .filter(status__in=["confirm", "completed"])
             .order_by("-date")
         )
@@ -161,7 +164,10 @@ class EventBookingGetViewSet(generics.GenericAPIView):
 
     def get(self, request, pk=None):
         try:
-            eventbooking = EventBooking.objects.prefetch_related("sessions").get(pk=pk)
+            eventbooking = EventBooking.objects.prefetch_related(
+                "sessions__staff_assignments__staff__role",
+                "sessions__staff_assignments__role_at_event",
+            ).get(pk=pk)
             serializer = EventBookingSerializer(eventbooking)
 
             response_data = serializer.data
@@ -290,37 +296,6 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                 # 🔥 Inject inside session dictionary
                 session_dict["ingredients_required"] = final_ingredients
 
-                # 🔥 Staff Assignments Info
-                managers = []
-                summoned_staff = []
-
-                for assignment in session_obj.staff_assignments.select_related(
-                    "staff", "role_at_event"
-                ):
-                    role_name = (
-                        assignment.role_at_event.name
-                        if assignment.role_at_event
-                        else (
-                            assignment.staff.role.name if assignment.staff.role else ""
-                        )
-                    )
-
-                    if role_name.lower() == "manager":
-                        managers.append(assignment.staff.name)
-
-                    if assignment.staff.staff_type in ["Agency", "Contract"]:
-                        summoned_staff.append(
-                            {
-                                "name": assignment.staff.name,
-                                "staff_type": assignment.staff.staff_type,
-                                "people_summoned": float(assignment.total_days),
-                                "role": role_name,
-                            }
-                        )
-
-                session_dict["managers_assigned"] = managers
-                session_dict["summoned_staff_details"] = summoned_staff
-
             return Response(
                 {
                     "status": True,
@@ -404,7 +379,10 @@ class PendingEventBookingViewSet(generics.GenericAPIView):
 
     def get(self, request):
         queryset = (
-            EventBooking.objects.prefetch_related("sessions")
+            EventBooking.objects.prefetch_related(
+                "sessions__staff_assignments__staff__role",
+                "sessions__staff_assignments__role_at_event",
+            )
             .filter(status="pending")
             .order_by("-date")
         )
@@ -422,7 +400,12 @@ class PendingEventBookingViewSet(generics.GenericAPIView):
 class GetAllEvent(generics.GenericAPIView):
     def get(self, request):
         queryset = (
-            EventBooking.objects.prefetch_related("sessions").all().order_by("-date")
+            EventBooking.objects.prefetch_related(
+                "sessions__staff_assignments__staff__role",
+                "sessions__staff_assignments__role_at_event",
+            )
+            .all()
+            .order_by("-date")
         )
         serializer = EventBookingSerializer(queryset, many=True)
         return Response(
