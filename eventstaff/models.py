@@ -1,6 +1,6 @@
 from django.db import models
 from decimal import Decimal
-from eventbooking.models import EventBooking
+from eventbooking.models import EventBooking, EventSession
 
 
 class StaffRole(models.Model):
@@ -60,11 +60,13 @@ class EventStaffAssignment(models.Model):
         ("Paid", "Paid"),
     )
 
-    event = models.ForeignKey(
-        EventBooking,
+    session = models.ForeignKey(
+        EventSession,
         on_delete=models.CASCADE,
         related_name="staff_assignments",
-        verbose_name="Event",
+        verbose_name="Session",
+        null=True,
+        blank=True,
     )
     staff = models.ForeignKey(
         Staff,
@@ -83,6 +85,9 @@ class EventStaffAssignment(models.Model):
     )
     total_days = models.DecimalField(
         "Total Days", max_digits=5, decimal_places=1, default=1.0
+    )
+    number_of_persons = models.PositiveIntegerField(
+        "Number of Persons", default=1, help_text="Number of staff members supplied by agency/contractor"
     )
     per_person_rate = models.DecimalField(
         "Per Person Rate (Override)",
@@ -121,10 +126,13 @@ class EventStaffAssignment(models.Model):
     class Meta:
         verbose_name = "Event Staff Assignment"
         verbose_name_plural = "Event Staff Assignments"
-        unique_together = ("event", "staff")
+        unique_together = ("session", "staff")
 
     def __str__(self):
-        return f"{self.staff.name} at {self.event.event_name if hasattr(self.event, 'event_name') else self.event.id}"
+        booking_name = (
+            self.session.booking.name if hasattr(self.session, "booking") else "Unknown"
+        )
+        return f"{self.staff.name} at {booking_name} ({self.session.event_date})"
 
     def save(self, *args, **kwargs):
         # 1. Determine effective calculation based on Staff Type
@@ -148,7 +156,7 @@ class EventStaffAssignment(models.Model):
             )
             self.total_amount = Decimal(str(self.total_days)) * Decimal(
                 str(effective_rate)
-            )
+            ) * Decimal(str(self.number_of_persons))
 
         # 3. Prevent overpayment logically, though sometimes it happens, keeping it simple here
         if self.paid_amount is None:

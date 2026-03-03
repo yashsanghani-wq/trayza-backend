@@ -27,7 +27,8 @@ class EventStaffAssignmentSerializer(serializers.ModelSerializer):
     # Optional nested details for GET endpoints
     staff_name = serializers.CharField(source="staff.name", read_only=True)
     staff_type = serializers.CharField(source="staff.staff_type", read_only=True)
-    event_name = serializers.CharField(source="event.name", read_only=True)
+    session_name = serializers.CharField(source="session.booking.name", read_only=True)
+    session_date = serializers.CharField(source="session.event_date", read_only=True)
     role_name_at_event = serializers.CharField(
         source="role_at_event.name", read_only=True
     )
@@ -80,7 +81,8 @@ class EventStaffAssignmentSerializer(serializers.ModelSerializer):
                     if per_person_rate is not None
                     else staff.per_person_rate
                 )
-                calc_amount = calc_rate * total_days
+                number_of_persons = data.get("number_of_persons", getattr(self.instance, 'number_of_persons', 1))
+                calc_amount = calc_rate * total_days * number_of_persons
 
             # Only validate if paid_amount is provided, or if instance already has paid_amount
             if paid_amount is not None and paid_amount > calc_amount:

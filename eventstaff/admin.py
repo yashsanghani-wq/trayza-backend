@@ -22,7 +22,7 @@ class StaffAdmin(admin.ModelAdmin):
 @admin.register(EventStaffAssignment)
 class EventStaffAssignmentAdmin(admin.ModelAdmin):
     list_display = (
-        "event",
+        "session",
         "staff",
         "role_at_event",
         "total_days",
@@ -31,8 +31,8 @@ class EventStaffAssignmentAdmin(admin.ModelAdmin):
         "remaining_amount",
         "payment_status",
     )
-    list_filter = ("payment_status", "event", "staff__staff_type", "role_at_event")
-    search_fields = ("event__name", "staff__name")
+    list_filter = ("payment_status", "session", "staff__staff_type", "role_at_event")
+    search_fields = ("session__booking__name", "staff__name")
     readonly_fields = ("total_amount", "remaining_amount", "payment_status")
 
     fieldsets = (
@@ -40,7 +40,7 @@ class EventStaffAssignmentAdmin(admin.ModelAdmin):
             "Assignment Details",
             {
                 "fields": (
-                    "event",
+                    "session",
                     "staff",
                     "role_at_event",
                     "total_days",

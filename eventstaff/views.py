@@ -55,7 +55,9 @@ class EventStaffAssignmentViewSet(viewsets.ModelViewSet):
     """
 
     queryset = (
-        EventStaffAssignment.objects.select_related("staff", "event")
+        EventStaffAssignment.objects.select_related(
+            "staff", "session", "session__booking"
+        )
         .all()
         .order_by("-created_at")
     )
@@ -67,11 +69,11 @@ class EventStaffAssignmentViewSet(viewsets.ModelViewSet):
         filters.OrderingFilter,
     ]
     filterset_fields = [
-        "event",
+        "session",
         "payment_status",
         "staff__staff_type",
     ]
-    search_fields = ["staff__name", "event__name"]
+    search_fields = ["staff__name", "session__booking__name"]
     ordering_fields = ["created_at", "total_amount", "paid_amount"]
 
     @action(detail=False, methods=["get"], url_path="event-summary")
@@ -82,18 +84,18 @@ class EventStaffAssignmentViewSet(viewsets.ModelViewSet):
         events = (
             EventBooking.objects.annotate(
                 total_labor=Count(
-                    "staff_assignments",
-                    filter=Q(staff_assignments__role_at_event__name="Labor"),
+                    "sessions__staff_assignments",
+                    filter=Q(sessions__staff_assignments__role_at_event__name="Labor"),
                 ),
                 total_waiter=Count(
-                    "staff_assignments",
-                    filter=Q(staff_assignments__role_at_event__name="Waiter"),
+                    "sessions__staff_assignments",
+                    filter=Q(sessions__staff_assignments__role_at_event__name="Waiter"),
                 ),
-                total_amount=Sum("staff_assignments__total_amount"),
-                total_paid=Sum("staff_assignments__paid_amount"),
-                total_pending=Sum("staff_assignments__remaining_amount"),
+                total_amount=Sum("sessions__staff_assignments__total_amount"),
+                total_paid=Sum("sessions__staff_assignments__paid_amount"),
+                total_pending=Sum("sessions__staff_assignments__remaining_amount"),
             )
-            .filter(staff_assignments__isnull=False)
+            .filter(sessions__staff_assignments__isnull=False)
             .distinct()
             .order_by("-date")
         )

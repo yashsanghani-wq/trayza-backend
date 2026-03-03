@@ -290,6 +290,37 @@ class EventBookingGetViewSet(generics.GenericAPIView):
                 # 🔥 Inject inside session dictionary
                 session_dict["ingredients_required"] = final_ingredients
 
+                # 🔥 Staff Assignments Info
+                managers = []
+                summoned_staff = []
+
+                for assignment in session_obj.staff_assignments.select_related(
+                    "staff", "role_at_event"
+                ):
+                    role_name = (
+                        assignment.role_at_event.name
+                        if assignment.role_at_event
+                        else (
+                            assignment.staff.role.name if assignment.staff.role else ""
+                        )
+                    )
+
+                    if role_name.lower() == "manager":
+                        managers.append(assignment.staff.name)
+
+                    if assignment.staff.staff_type in ["Agency", "Contract"]:
+                        summoned_staff.append(
+                            {
+                                "name": assignment.staff.name,
+                                "staff_type": assignment.staff.staff_type,
+                                "people_summoned": float(assignment.total_days),
+                                "role": role_name,
+                            }
+                        )
+
+                session_dict["managers_assigned"] = managers
+                session_dict["summoned_staff_details"] = summoned_staff
+
             return Response(
                 {
                     "status": True,

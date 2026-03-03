@@ -14,9 +14,9 @@ class VendorCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VendorCategory
-        fields = ["id", "category", "category_name", "price"]
+        fields = ["id", "category", "category_name"]
 
-        
+
 class VendorSerializer(serializers.ModelSerializer):
     vendor_categories = VendorCategorySerializer(many=True)
 
@@ -39,7 +39,6 @@ class VendorSerializer(serializers.ModelSerializer):
             VendorCategory.objects.create(
                 vendor=vendor,
                 category=cat_data["category"],
-                price=cat_data.get("price"),
             )
 
         return vendor
@@ -59,8 +58,6 @@ class VendorSerializer(serializers.ModelSerializer):
                 VendorCategory.objects.create(
                     vendor=instance,
                     category=cat_data["category"],
-                    price=cat_data.get("price"),
                 )
 
         return instance
-

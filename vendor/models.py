@@ -1,6 +1,7 @@
 from django.db import models
 from ListOfIngridients.models import IngridientsCategory
 
+
 # Create your models here.
 class Vendor(models.Model):
     name = models.CharField(max_length=200)
@@ -10,12 +11,13 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.name
-    
-class VendorCategory(models.Model):
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="vendor_categories")
-    category = models.ForeignKey(IngridientsCategory, on_delete=models.CASCADE)
 
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+class VendorCategory(models.Model):
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.CASCADE, related_name="vendor_categories"
+    )
+    category = models.ForeignKey(IngridientsCategory, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.vendor.name} - {self.category.name}"
