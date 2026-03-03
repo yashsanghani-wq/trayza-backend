@@ -3,6 +3,7 @@ from .models import *
 
 
 class EventSessionSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     event_date = serializers.DateField(
         input_formats=["%d-%m-%Y"],  # Accept DD-MM-YYYY in the payload
         format="%d-%m-%Y",  # Return DD-MM-YYYY in the response
@@ -112,10 +113,23 @@ class EventBookingSerializer(serializers.ModelSerializer):
         instance.save()
 
         # If sessions were provided in update, we overwrite old sessions
-        # (This is a simplified approach: delete old and create new)
         if sessions_data is not None:
-            instance.sessions.all().delete()
+            existing_sessions = {s.id: s for s in instance.sessions.all()}
+
             for session_data in sessions_data:
-                EventSession.objects.create(booking=instance, **session_data)
+                session_id = session_data.get("id", None)
+                if session_id and session_id in existing_sessions:
+                    # Update existing session
+                    session = existing_sessions.pop(session_id)
+                    for attr, value in session_data.items():
+                        setattr(session, attr, value)
+                    session.save()
+                else:
+                    # Create new session if no valid ID
+                    EventSession.objects.create(booking=instance, **session_data)
+
+            # Delete sessions that were not in the PUT payload
+            for session in existing_sessions.values():
+                session.delete()
 
         return instance
