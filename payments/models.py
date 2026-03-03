@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Payment(models.Model):
     PAYMENT_MODE_CHOICES = [
         ("CASH", "CASH"),
@@ -16,9 +17,13 @@ class Payment(models.Model):
     ]
 
     bill_no = models.AutoField(primary_key=True)
-    # Array field for storing multiple billed_to IDs
-    billed_to_ids = models.JSONField(
-        default=list, help_text="List of EventBooking IDs this Payment is billed to"
+    # Link to a single EventBooking containing multiple sessions
+    booking = models.ForeignKey(
+        "eventbooking.EventBooking",
+        on_delete=models.CASCADE,
+        related_name="payments",
+        null=True,
+        blank=True,
     )
     total_amount = models.DecimalField(max_digits=100, decimal_places=0)
     total_extra_amount = models.DecimalField(max_digits=250, decimal_places=0)
@@ -50,7 +55,4 @@ class Payment(models.Model):
         return self.payment_date.strftime("%d-%m-%Y")
 
     def save(self, *args, **kwargs):
-        # Ensure billed_to_ids is always a list
-        if self.billed_to_ids and not isinstance(self.billed_to_ids, list):
-            self.billed_to_ids = list(self.billed_to_ids)
         super().save(*args, **kwargs)
