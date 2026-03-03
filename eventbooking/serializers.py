@@ -34,8 +34,16 @@ class EventSessionSerializer(serializers.ModelSerializer):
                 if assignment.role_at_event
                 else (assignment.staff.role.name if assignment.staff.role else "")
             )
-            if role_name.lower() == "manager":
-                managers.append(assignment.staff.name)
+            if role_name.lower() == "manager" or assignment.staff.staff_type == "Fixed":
+                managers.append(
+                    {
+                        "assignment_id": assignment.id,
+                        "name": assignment.staff.name,
+                        "staff_type": assignment.staff.staff_type,
+                        "people_summoned": assignment.number_of_persons,
+                        "role": role_name,
+                    }
+                )
         return managers
 
     def get_summoned_staff_details(self, obj):
