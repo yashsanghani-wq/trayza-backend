@@ -46,22 +46,19 @@ class LoginViewSet(generics.GenericAPIView):
                 status=status.HTTP_200_OK,
             )
 
+
 class NoteViewSet(generics.GenericAPIView):
     serializer_class = NoteSerializer
 
     def post(self, request):
-        
-        serializer = NoteSerializer(data = request.data)
+
+        serializer = NoteSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
 
             return Response(
-                {
-                    "status": True,
-                    "message": "Note Store successfully",
-                    "data": {}
-                },
+                {"status": True, "message": "Note Store successfully", "data": {}},
                 status=status.HTTP_200_OK,
             )
         return Response(
@@ -73,7 +70,7 @@ class NoteViewSet(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
-    def put(self, request,pk):
+    def put(self, request, pk):
 
         get_note = Note.objects.filter(id=pk).first()
         if not get_note:
@@ -85,29 +82,29 @@ class NoteViewSet(generics.GenericAPIView):
                 },
                 status=status.HTTP_200_OK,
             )
-        
+
         serializer = NoteSerializer(get_note, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(
-                    {
-                        "status": True,
-                        "message": "Note updated successfully",
-                        "data": serializer.data,
-                    },
-                    status=status.HTTP_200_OK,
-                )
-
-        return Response(
+            serializer.save()
+            return Response(
                 {
-                    "status": False,
-                    "message": "Something went wrong",
-                    "data": {},
+                    "status": True,
+                    "message": "Note updated successfully",
+                    "data": serializer.data,
                 },
                 status=status.HTTP_200_OK,
             )
-    
+
+        return Response(
+            {
+                "status": False,
+                "message": "Something went wrong",
+                "data": {},
+            },
+            status=status.HTTP_200_OK,
+        )
+
     def get(self, request):
         queryset = Note.objects.all()
         serializer = NoteSerializer(queryset, many=True)
@@ -120,6 +117,7 @@ class NoteViewSet(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
+
 class UserCreateAPIView(generics.GenericAPIView):
     serializer_class = UserCreateSerializer
     queryset = UserModel.objects.all()
@@ -128,31 +126,45 @@ class UserCreateAPIView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            return Response({
-                "status": True,
-                "message": "User created successfully",
-                "data": {
-                    # "id": user.id,
-                    # "username": user.username,
-                    # "email": user.email,
-                    # "tokens": user.tokens
-                }
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "status": True,
+                    "message": "User created successfully",
+                    "data": {
+                        # "id": user.id,
+                        # "username": user.username,
+                        # "email": user.email,
+                        # "tokens": user.tokens
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
         error_messages = []
         for field, errors in serializer.errors.items():
             error_messages.extend(errors)
-        return Response({"status": False,"message": error_messages[0]}, status=status.HTTP_200_OK)
+        return Response(
+            {"status": False, "message": error_messages[0]}, status=status.HTTP_200_OK
+        )
 
     def get(self, request):
         users = self.get_queryset()
         serializer = self.get_serializer(users, many=True)
-        return Response({"status": False,"message": "User List Fatch successfully.","data":serializer.data}, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "status": False,
+                "message": "User List Fatch successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     def delete(self, request, id):
         user = get_object_or_404(UserModel, id=id)
         user.delete()
-        return Response({"status": True,"message": "User deleted successfully."}, status=status.HTTP_200_OK)
-
+        return Response(
+            {"status": True, "message": "User deleted successfully."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class ChangePasswordAPIView(generics.GenericAPIView):
@@ -164,21 +176,126 @@ class ChangePasswordAPIView(generics.GenericAPIView):
             try:
                 user = UserModel.objects.get(id=id)
             except UserModel.DoesNotExist:
-                return Response({"status": False,"message": "User not found."}, status=status.HTTP_200_OK)
+                return Response(
+                    {"status": False, "message": "User not found."},
+                    status=status.HTTP_200_OK,
+                )
 
-            new_password = serializer.validated_data['new_password']
+            new_password = serializer.validated_data["new_password"]
             user.set_password(new_password)
             user.save()
 
-            return Response({"status": True,"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+            return Response(
+                {"status": True, "message": "Password changed successfully."},
+                status=status.HTTP_200_OK,
+            )
 
         # Custom error format
         error_messages = []
         for field, errors in serializer.errors.items():
             print("serializer.errors.items()")
             error_messages.extend(errors)
-        
-        return Response({"status": False,"message": error_messages[0]}, status=status.HTTP_200_OK)
+
+        return Response(
+            {"status": False, "message": error_messages[0]}, status=status.HTTP_200_OK
+        )
 
 
 # python manage.py runserver 192.168.1.83:8001
+
+
+class BusinessProfileAPIView(generics.GenericAPIView):
+    serializer_class = BusinessProfileSerializer
+    queryset = BusinessProfile.objects.all()
+    # permission_classes = [IsAuthenticated] # Uncomment to enforce authentication
+
+    def get(self, request):
+        # If you want to get all profiles:
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(
+            {
+                "status": True,
+                "message": "Business profiles fetched successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def post(self, request):
+        # Typically one user has one profile, you can map it automatically if requests are authenticated:
+        # data = request.data.copy()
+        # data['user'] = request.user.id
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "status": True,
+                    "message": "Business profile created successfully.",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        error_messages = []
+        for field, errors in serializer.errors.items():
+            error_messages.extend(errors)
+        return Response(
+            {"status": False, "message": error_messages[0]}, status=status.HTTP_200_OK
+        )
+
+
+class BusinessProfileDetailAPIView(generics.GenericAPIView):
+    serializer_class = BusinessProfileSerializer
+    queryset = BusinessProfile.objects.all()
+
+    def get_object(self, id):
+        try:
+            return BusinessProfile.objects.get(id=id)
+        except BusinessProfile.DoesNotExist:
+            return None
+
+    def get(self, request, id):
+        profile = self.get_object(id)
+        if not profile:
+            return Response(
+                {"status": False, "message": "Business profile not found.", "data": {}},
+                status=status.HTTP_200_OK,
+            )
+        serializer = self.get_serializer(profile)
+        return Response(
+            {
+                "status": True,
+                "message": "Business profile fetched successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def put(self, request, id):
+        profile = self.get_object(id)
+        if not profile:
+            return Response(
+                {"status": False, "message": "Business profile not found.", "data": {}},
+                status=status.HTTP_200_OK,
+            )
+
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "status": True,
+                    "message": "Business profile updated successfully.",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        error_messages = []
+        for field, errors in serializer.errors.items():
+            error_messages.extend(errors)
+        return Response(
+            {"status": False, "message": error_messages[0]}, status=status.HTTP_200_OK
+        )
