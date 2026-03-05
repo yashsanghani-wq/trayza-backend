@@ -52,15 +52,13 @@ class StaffViewSet(viewsets.ModelViewSet):
 class EventStaffAssignmentViewSet(viewsets.ModelViewSet):
     """
     CRUD API for Event Staff Assignments
+
+    Supports filtering by:
+      ?staff_type=Agency|Fixed|Contract   (shorthand for staff__staff_type)
+      ?session=<id>
+      ?payment_status=Pending|Partial|Paid
     """
 
-    queryset = (
-        EventStaffAssignment.objects.select_related(
-            "staff", "session", "session__booking"
-        )
-        .all()
-        .order_by("-created_at")
-    )
     serializer_class = EventStaffAssignmentSerializer
     # permission_classes = [IsAuthenticated] # Uncomment once authentication is strictly enforced
     filter_backends = [
@@ -75,6 +73,22 @@ class EventStaffAssignmentViewSet(viewsets.ModelViewSet):
     ]
     search_fields = ["staff__name", "session__booking__name"]
     ordering_fields = ["created_at", "total_amount", "paid_amount"]
+
+    def get_queryset(self):
+        qs = (
+            EventStaffAssignment.objects.select_related(
+                "staff", "session", "session__booking"
+            )
+            .all()
+            .order_by("-created_at")
+        )
+
+        # Allow ?staff_type=Agency  (friendlier alias for staff__staff_type)
+        staff_type = self.request.query_params.get("staff_type")
+        if staff_type:
+            qs = qs.filter(staff__staff_type=staff_type)
+
+        return qs
 
     @action(detail=False, methods=["get"], url_path="event-summary")
     def event_summary(self, request):
